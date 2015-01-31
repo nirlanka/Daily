@@ -1,0 +1,8 @@
+	# !! in `update.sh`, the output (article) name needs to change, always.
+	./render.sh
+	./update.sh
+
+TODO:
+[] insert node-js in the middle
+[] iterate article file name
+[] add (last) post removal script
