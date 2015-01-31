@@ -4,6 +4,9 @@ fs = require('fs')
 
 // READ META-DATA
 var meta=require(root+'new/meta.json')
+if (meta['short-name']=='') {
+	meta['short-name']=require(root+'status.json')['short-name']
+}
 var newPostData={
 	'title': meta['title'],
 	'writer': meta['writer'],
@@ -13,12 +16,12 @@ var newPostData={
 
 // CHECK IF `short-name` IS PUBLISHED
 if (fs.existsSync(root+'p/'+meta['short-name']+'.html')) {
-	console.log('error: already published in same `short-name`')
+	console.log('error: already published in same `short-name`.')
 	process.exit()
 };
 // CHECK IF `short-name` IS NOT RENDERED
-if (!fs.existsSync(root+'new/'+meta['short-name']+'.html')) {
-	console.log('error: not rendered.')
+if (! (fs.existsSync(root+'new/'+(meta['short-name'])+'.html'))	) {
+	console.log('error: article is not rendered.')
 	process.exit()
 };
 
@@ -29,7 +32,8 @@ var child = exec(
 		root+'new/'+meta['short-name']+'.html'+
 	' '+
 		root+'p/'+meta['short-name']+'.html'+
-	'; rm '+root+'new/content.html'
+	'; rm '+root+'new/content.html'		// remove rendered-markdown temp file
+	+ '; cp '+root+'new/content.md '+root+'published/'+meta['short-name']+'.md'		// remove rendered-markdown temp file
 	,	function (error, stdout, stderr) {
 		    console.log(stdout + 'Markdown rendered.');
 		    console.log(stderr);

@@ -32,7 +32,34 @@ if (fs.existsSync(root+'p/'+meta['short-name']+'.html')) {
 // RENDER DATE
 if (meta['date']=='') {meta['date']=new Date();}
 else meta['date']=new Date(meta["date"])
-console.log(meta['date'])
+// console.log(meta['date'])
+
+// DEFAULT SHORT-NAME FOR ARTICLE
+if (meta['short-name']=='') {
+	// SET DEFAULT `short-name`
+	var status=require(root+'status.json')
+	status['short-name']=''+(parseInt(status['short-name'])+1)
+	meta['short-name']=''
+	// UPDATE `status.json`
+	fs.writeFile(
+		root+'status.json',
+		JSON.stringify(status, null, 4),
+		function (err) {
+			if (err) {console.log(err);}
+			else {console.log('`status.json` was updated.')}
+		}
+	)
+	// UPDATE `meta.json`
+	// fs.writeFile(
+	// 	root+'new/meta.json',
+	// 	JSON.stringify(meta, null, 4),
+	// 	function (err) {
+	// 		if (err) {console.log(err);}
+	// 		else {console.log('`meta.json` was updated.')}
+	// 	}
+	// )
+	meta['short-name']=status['short-name']
+};
 
 // READ TEMPLATE HTML (= WRAPPER)
 var template=fs.readFileSync(root+'new/template.html', 'utf8', function (err,data) {

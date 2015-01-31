@@ -1,5 +1,6 @@
-# rm p/*;
+rm timeline-data.json
+cp empty/timeline-data.json ./
 
-rm new/cont*.html;
+rm new/content.html
 
-# rm index.html;
+rm p/*

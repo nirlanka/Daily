@@ -1,12 +1,8 @@
 {
-	"title": "Article One",
-
-	"writer": "Nirmal Lankathilaka",
-	"writer-link": "https://twitter.com/Srdyel",
-
-	"date": "2015-01-30",
-
-	"short-name": "199279",
-
-	"intro": "This also acts like an intro to the article"
+    "title": "Second Article",
+    "writer": "Nirmal Lankathilaka",
+    "writer-link": "https://twitter.com/Srdyel",
+    "date": "2015-01-31T00:00:00.000Z",
+    "short-name": "",
+    "intro": "An intro to the article"
 }

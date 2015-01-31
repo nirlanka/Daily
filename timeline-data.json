@@ -1,10 +1,16 @@
 {
     "list": [
         {
-            "title": "Article One",
+            "title": "Second Article",
             "writer": "Nirmal Lankathilaka",
-            "intro": "This also acts like an intro to the article",
-            "short-name": "199279"
+            "intro": "An intro to the article",
+            "short-name": "199310"
+        },
+        {
+            "title": "Second Article",
+            "writer": "Nirmal Lankathilaka",
+            "intro": "An intro to the article",
+            "short-name": "199311"
         }
     ]
 }
