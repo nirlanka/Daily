@@ -3,6 +3,7 @@
 	./update.sh
 
 TODO:
+[ok] persistent data (configs)
 [] insert node-js in the middle
 [] iterate article file name
 [] add (last) post removal script
