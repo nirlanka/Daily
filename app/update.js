@@ -4,85 +4,102 @@ fs = require('fs')
 
 // READ META-DATA
 var meta=require(root+'new/meta.json')
-
-// READ TEMPLATE HTML[S] (= WRAPPER)
-var template=fs.readFileSync(root+'items/template.html', 'utf8', function (err,data) {
-  if (err) {
-    console.log(err)
-    return ''
-  }
-
-  return data
-});
-var postTemplate=fs.readFileSync(root+'items/post.html', 'utf8', function (err,data) {
-  if (err) {
-    console.log(err)
-    return ''
-  }
-
-  return data
-});
-
-// POST OBJECT (FOR TIMELINE)
-var link='p/'+meta['short-name']+'.html'
-var postData={
+var newPostData={
 	'title': meta['title'],
 	'writer': meta['writer'],
 	'intro': meta['intro'],
-	'link': link
+	'short-name': meta['short-name']
 }
 
+// CHECK IF `short-name` IS PUBLISHED
+if (fs.existsSync(root+'p/'+meta['short-name']+'.html')) {
+	console.log('error: already published in same `short-name`')
+	process.exit()
+};
+// CHECK IF `short-name` IS NOT RENDERED
+if (!fs.existsSync(root+'new/'+meta['short-name']+'.html')) {
+	console.log('error: not rendered.')
+	process.exit()
+};
 
-var post=postTemplate
-
-// RENDER SINGLE POST
-for (var k in postData)
-	post=post.replace('{{'+k+'}}', postData[k])
-
-// WRITE SINGLE POST
-var exec = require('child_process').exec,
-    child;
-child = exec(
-	'cp '+
+// PUBLISH FILE (add to `p/` dir)
+var exec = require('child_process').exec
+var child = exec(
+	'mv '+
 		root+'new/'+meta['short-name']+'.html'+
 	' '+
-		root+'p/'+meta['short-name']+'.html'
-	,
-	function (error, stdout, stderr) {
-	    console.log(stdout + 'Markdown rendered.');
-	    console.log(stderr);
-	    if (error !== null) {
-	      console.log('exec error: ' + error);
-	    }
-	}
+		root+'p/'+meta['short-name']+'.html'+
+	'; rm '+root+'new/content.html'
+	,	function (error, stdout, stderr) {
+		    console.log(stdout + 'Markdown rendered.');
+		    console.log(stderr);
+		    if (error !== null) {
+		      console.log('exec error: ' + error);
+		    }
+		}
 );
 
-// UPDATE TIMELINE
-var timeline=require(root+'timeline.json')
-timeline['list'].push(post)
+// GET POST-TEMPLATE (for `index.html`)
+var postTemplate=fs.readFileSync(
+  root+'items/post.html', 'utf8', function (err,data) {
+	  if (err) {
+	    console.log(err)
+	    return ''
+	  }
+	  return data
+  }
+);
 
-// WRITE TIMELINE
+// BUILD TIMELINE
+var timelineData=require(root+'timeline-data.json')
+timelineData['list'].push(newPostData) // update timeline (in-memory)
+
+// RENDER TIMELINE
+var thisPost, thisPostRendered, allPosts=''
+for (var i = timelineData['list'].length - 1; i >= 0; i--) {
+	thisPost=timelineData['list'][i]
+	thisPostRendered=postTemplate
+	// render all but {{link}} (per post)
+	for (var k in thisPost) {
+		if (k!='short-name') {
+			thisPostRendered=
+				thisPostRendered.replace('{{'+k+'}}', thisPost[k])
+		}
+	}
+	// render {{link}}
+	thisPostRendered=thisPostRendered.replace(
+				'{{link}}',
+				'p/'+thisPost['short-name']+'.html'
+			)
+	allPosts+=thisPostRendered
+};
+
+// UPDATE TIMELINE-DATA
 fs.writeFile(
-	root+'timeline.json',
-	JSON.stringify(timeline, null, 4),
+	root+'timeline-data.json',
+	JSON.stringify(timelineData, null, 4),
 	function (err) {
 		if (err) {console.log(err);}
-		else {console.log('JSON (timeline) saved.')}
+		else {console.log('`timeline-data.json` was updated.')}
 	}
 )
 
 // RENDER INDEX PAGE
-for (var i = timeline['list'].length - 1; i >= 0; i--) {
-	template=template.replace('{{posts}}', timeline['list'][i]+'{{posts}}')
-};
-template=template.replace('{{posts}}','')
-
-// WRITE INDEX
+var indexTemplate=fs.readFileSync(
+  root+'items/template.html', 'utf8', function (err,data) {
+	  if (err) {
+	    console.log(err)
+	    return ''
+	  }
+	  return data
+  }
+);
+indexTemplate=indexTemplate.replace('{{posts}}', allPosts)
 fs.writeFile(
 	root+'index.html',
-	template,
+	indexTemplate,
 	function (err) {
 		if (err) {console.log(err);}
-		else {console.log('Article saved locally.')}
+		else {console.log('`index.html` was updated.')}
 	}
 )

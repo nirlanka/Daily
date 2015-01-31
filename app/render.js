@@ -23,13 +23,6 @@ var meta=require(root+'new/meta.json')
 
 fs = require('fs')
 
-// temp {{
-	/*// RENDER DATE
-	if (meta['date']=='') {meta['date']=new Date();}
-	else meta['date']=new Date(meta["date"])
-	console.log(meta['date'])*/
-// }}
-
 // CHECK IF `short-name` IS PUBLISHED
 if (fs.existsSync(root+'p/'+meta['short-name']+'.html')) {
 	console.log('ERR: Published file exists (with the same `short-name`).')
