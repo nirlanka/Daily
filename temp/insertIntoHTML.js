@@ -9,7 +9,6 @@ var template=fs.readFileSync('one.html', 'utf8', function (err,data) {
   template=data
 });
 
-// str.replace(regexp|substr, newSubStr|function[, flags])
 template=template.replace('{{post}}', '<<post>>')
 
 console.log(template)
