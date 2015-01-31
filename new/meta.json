@@ -1,10 +1,12 @@
 {
-	"title": "Article One",
+	"title": "Article Four",
 
 	"writer": "Nirmal Lankathilaka",
 	"writer-link": "https://twitter.com/Srdyel",
 
 	"date": "2015-01-30",
 
-	"short-name": "zero-one"
+	"short-name": "zero-four",
+
+	"intro": "This acts like an intro to the article"
 }
